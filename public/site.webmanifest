@@ -1,0 +1,15 @@
+{
+  "name": "Anne Sam-Bodden — Resume",
+  "short_name": "ASB Resume",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#efe8dc",
+  "theme_color": "#7a2230",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "anne-sam-bodden-resume",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "check": "ASTRO_TELEMETRY_DISABLED=1 astro check",
+    "build:site": "ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "build:docx": "bash scripts/build-docx.sh",
+    "build:pdf": "node scripts/build-pdf.mjs",
+    "build": "npm run check && npm run build:site && npm run build:docx && npm run build:pdf && node scripts/verify-build.mjs",
+    "build:private": "npm run build && bash scripts/build-docx.sh --private && node scripts/build-pdf.mjs --private",
+    "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
+    "test": "npm run build"
+  },
+  "engines": {
+    "node": ">=20.11"
+  },
+  "dependencies": {
+    "@fontsource-variable/figtree": "^5.3.0",
+    "@fontsource-variable/fraunces": "^5.3.0",
+    "astro": "^7.2.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "playwright": "^1.55.0",
+    "typescript": "^5.9.2"
+  }
+}

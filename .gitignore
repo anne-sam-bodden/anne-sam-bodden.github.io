@@ -1,0 +1,9 @@
+node_modules/
+dist/
+private/
+.astro/
+.DS_Store
+public/downloads/*.pdf
+public/downloads/*.docx
+playwright-report/
+test-results/

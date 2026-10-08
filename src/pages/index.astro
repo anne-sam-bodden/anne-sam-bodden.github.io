@@ -1,0 +1,161 @@
+---
+import "@fontsource-variable/figtree/wght.css";
+import "@fontsource-variable/fraunces/opsz.css";
+import "@fontsource-variable/fraunces/opsz-italic.css";
+import { Content, frontmatter } from "../resume.md";
+import "../styles/global.css";
+
+const base = import.meta.env.BASE_URL;
+const asset = (path: string) => `${base}${path}`;
+const canonical = Astro.site ? new URL(base, Astro.site).href : undefined;
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Anne Sam-Bodden",
+  jobTitle: "Data Analyst II, Cable One",
+  email: "mailto:aksambodden@gmail.com",
+  homeLocation: {
+    "@type": "Place",
+    name: "Scottsdale, Arizona",
+  },
+  alumniOf: [{ "@type": "CollegeOrUniversity", name: "Ohio Wesleyan University" }],
+  sameAs: ["https://www.linkedin.com/in/annesambodden"],
+};
+const highlights = [
+  { figure: "$4.6M", label: "Estimated 2026 impact of AutoPay+ discount corrections" },
+  { figure: "146K", label: "Customers covered by lookup tools during a billing migration" },
+  { figure: "430K+", label: "Largest campaign audience built and tracked" },
+];
+---
+
+<!doctype html>
+<html lang="en" data-theme="light" data-palette="sonoran" data-images="on">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={frontmatter.description} />
+    <meta name="theme-color" content="#efe8dc" />
+    <meta property="og:type" content="profile" />
+    <meta property="og:title" content={frontmatter.pageTitle} />
+    <meta property="og:description" content={frontmatter.description} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" type="image/svg+xml" href={asset("favicon.svg")} />
+    <link rel="manifest" href={asset("site.webmanifest")} />
+    <title>{frontmatter.pageTitle}</title>
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        const storedTheme = localStorage.getItem("resume-theme");
+        const storedPalette = localStorage.getItem("resume-palette");
+        const storedImages = localStorage.getItem("resume-images");
+        const validPalettes = ["sonoran", "sage", "slate"];
+        root.dataset.theme = storedTheme || "light";
+        root.dataset.palette = validPalettes.includes(storedPalette) ? storedPalette : "sonoran";
+        root.dataset.images = storedImages || (matchMedia("(max-width: 620px)").matches ? "off" : "on");
+      })();
+    </script>
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </head>
+  <body>
+    <a class="skip-link" href="#resume">Skip to résumé</a>
+
+    <header class="utility-bar" aria-label="Résumé controls">
+      <a class="wordmark" href={base} aria-label="Anne Sam-Bodden résumé home">
+        <span class="wordmark-name">Anne Sam-Bodden</span>
+        <span class="wordmark-tag">Résumé</span>
+      </a>
+
+      <nav class="downloads" aria-label="Download résumé">
+        <a href={asset("downloads/anne-sam-bodden-resume.pdf")} download>PDF</a>
+        <a href={asset("downloads/anne-sam-bodden-resume.docx")} download>DOCX</a>
+      </nav>
+
+      <div class="controls">
+        <button id="palette-toggle" type="button" aria-label="Change color palette">
+          <span class="control-key">Palette</span>
+          <span id="palette-label">Sonoran</span>
+        </button>
+        <button id="images-toggle" type="button" aria-pressed="true">
+          <span class="control-key">Sidebar</span>
+          <span id="images-label">On</span>
+        </button>
+        <button id="theme-toggle" type="button" aria-label="Switch color mode" aria-pressed="false">
+          <span class="control-key">Mode</span>
+          <span id="theme-label">Light</span>
+        </button>
+      </div>
+    </header>
+
+    <main id="resume" class="site-main">
+      <article class="resume-content" aria-label="Anne Sam-Bodden résumé">
+        <Content />
+      </article>
+
+      <aside class="visual-rail" aria-label="Portrait and career highlights">
+        <figure class="portrait-frame">
+          <img src={asset("images/anne-sam-bodden.jpg")} alt="Anne Sam-Bodden" width="320" height="320" />
+        </figure>
+        <p class="visual-rail-label">At a Glance</p>
+        {
+          highlights.map((item) => (
+            <div class="highlight">
+              <strong>{item.figure}</strong>
+              <span>{item.label}</span>
+            </div>
+          ))
+        }
+      </aside>
+    </main>
+
+    <script>
+      const root = document.documentElement;
+      const themeToggle = document.querySelector<HTMLButtonElement>("#theme-toggle");
+      const themeLabel = document.querySelector<HTMLElement>("#theme-label");
+      const imagesToggle = document.querySelector<HTMLButtonElement>("#images-toggle");
+      const imagesLabel = document.querySelector<HTMLElement>("#images-label");
+      const paletteToggle = document.querySelector<HTMLButtonElement>("#palette-toggle");
+      const paletteLabel = document.querySelector<HTMLElement>("#palette-label");
+      const palettes = ["sonoran", "sage", "slate"];
+      const paletteNames: Record<string, string> = { sonoran: "Sonoran", sage: "Sage", slate: "Slate" };
+
+      document.querySelectorAll<HTMLAnchorElement>('a[href^="http://"], a[href^="https://"]').forEach((link) => {
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+      });
+
+      function syncControls() {
+        const dark = root.dataset.theme === "dark";
+        const imagesOn = root.dataset.images === "on";
+        if (themeLabel) themeLabel.textContent = dark ? "Dark" : "Light";
+        if (imagesLabel) imagesLabel.textContent = imagesOn ? "On" : "Off";
+        themeToggle?.setAttribute("aria-pressed", String(dark));
+        imagesToggle?.setAttribute("aria-pressed", String(imagesOn));
+        if (paletteLabel) {
+          paletteLabel.textContent = paletteNames[root.dataset.palette || "sonoran"] || "Sonoran";
+        }
+      }
+
+      themeToggle?.addEventListener("click", () => {
+        root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+        localStorage.setItem("resume-theme", root.dataset.theme);
+        syncControls();
+      });
+
+      imagesToggle?.addEventListener("click", () => {
+        root.dataset.images = root.dataset.images === "on" ? "off" : "on";
+        localStorage.setItem("resume-images", root.dataset.images);
+        syncControls();
+      });
+
+      paletteToggle?.addEventListener("click", () => {
+        const current = palettes.indexOf(root.dataset.palette || "sonoran");
+        root.dataset.palette = palettes[(current + 1) % palettes.length];
+        localStorage.setItem("resume-palette", root.dataset.palette);
+        syncControls();
+      });
+
+      syncControls();
+    </script>
+  </body>
+</html>
